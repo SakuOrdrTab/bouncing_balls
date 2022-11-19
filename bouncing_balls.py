@@ -14,11 +14,12 @@ def main():
     # debug:
     ball = Ball.Ball()
     ball2 = Ball.Ball()
-    ball2.mass = 3000
+    ball2.x = ball.x
     print(ball.radius)
-    print(ball.mass)
+    print(ball.x, ball.y)
     print(ball2.radius)
-    print(ball2.mass)
+    print(ball2.x, ball2.y)
+    print(ball.overlaps(ball2))
     
     return None
 
