@@ -10,12 +10,13 @@ import random
 
 class Ball:
     
-    radius = 1
-    x = 0
-    y = 0
-    x_vel = 0.0
-    y_vel = 0.0
-    mass = 100
+    # instance variables:
+    # radius = 1
+    # x = 0
+    # y = 0
+    # x_vel = 0.0
+    # y_vel = 0.0
+    # mass = 100
     
     def __init__(self):
         self.x = random.randint(FRAME_MIN_X, FRAME_MAX_X)
