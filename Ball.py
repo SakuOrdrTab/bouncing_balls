@@ -34,6 +34,13 @@ class Ball:
         self.y_vel = random.random() * 5
         return None
 
+    def __str__(self) -> str:
+        message = "Ball obj id <{}>\n".format(id(self))
+        message += " center x:{0} y:{1}\n v_x:{2:.2f} v_y:{3:.2f}\n radius: {4}, mass: {5}\n".format(
+            self.x, self.y, self.x_vel, self.y_vel, self.radius, self.mass)
+        message += " Touches wall: "+str(self.touches_wall())
+        return message
+
     # for class
     def ball_distance(ball_a, ball_b):
         """Distance between two balls
