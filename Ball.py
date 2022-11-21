@@ -2,6 +2,7 @@
 # Ver 0.01
 # Ver 0.02 ball overlapping added
 # Ver 0.03 wall collision added, docstrings
+# Ver 0.04 added rudimentary bounces
 
 
 FRAME_MIN_X = 1
@@ -94,6 +95,20 @@ class Ball:
                 return True
         else:
             return False
+    
+    def bounce(self): # rudimentary non-physical wall collision
+        if self.x <= FRAME_MIN_X or self.x >= FRAME_MAX_X:
+            self.x_vel = -1 * self.x_vel
+        if self.y <= FRAME_MIN_Y or self.y >= FRAME_MAX_Y:
+            self.y_vel = -1 * self.y_vel
+        return None
+
+    def bounce(self, ball2): # rudimentary non-physical collision with balls, just reverse speeds
+        self.x_vel = -1 * self.x_vel
+        ball2.x_vel = -1 * ball2.x_vel
+        self.y_vel = -1 * self.y_vel
+        ball2.y_vel = -1 * ball2.y_vel
+        return None
     
     
     
