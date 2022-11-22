@@ -12,11 +12,12 @@ def main():
     # exit  
     
     # debug:
-    ball = Ball.Ball()
+    ball1 = Ball.Ball()
     ball2 = Ball.Ball()
-    print(ball)
+    print(ball1)
     print(ball2)
-    
+    print("Ball distance: {:.1f}".format(Ball.Ball.ball_distance(ball1, ball2)),
+          "Balls overlap: ", Ball.Ball.overlap(ball1, ball2))
     return None
 
 main()

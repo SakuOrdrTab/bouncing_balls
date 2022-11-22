@@ -51,7 +51,7 @@ class Ball:
             ball_b (Ball): second ball
 
         Returns:
-            int: Distance between the radiuses of the two balls
+            float: Distance between the radiuses of the two balls
         """        
         center_dist = math.sqrt((ball_a.x-ball_b.x)**2+(ball_a.y-ball_b.y)**2)
         return center_dist - ball_a.radius - ball_b.radius
@@ -95,19 +95,28 @@ class Ball:
                 return True
         else:
             return False
+        
+    # make lambda for dist of two coords
+    # def _dist lambda (x1, y1, x2, y2) : sqrt((x1-x2)**2 + (y1-y2**2))
     
-    def bounce(self): # rudimentary non-physical wall collision
+    def bounce_w_wall(self): # rudimentary non-physical wall collision
+        # reverse speed
         if self.x <= FRAME_MIN_X or self.x >= FRAME_MAX_X:
             self.x_vel = -1 * self.x_vel
         if self.y <= FRAME_MIN_Y or self.y >= FRAME_MAX_Y:
             self.y_vel = -1 * self.y_vel
+        # implement movement of ball away from wall
+        # here:
         return None
 
-    def bounce(self, ball2): # rudimentary non-physical collision with balls, just reverse speeds
+    def bounce_w_ball(self, ball2): # rudimentary non-physical collision with balls, just reverse speeds
+        # reverse speeds
         self.x_vel = -1 * self.x_vel
         ball2.x_vel = -1 * ball2.x_vel
         self.y_vel = -1 * self.y_vel
         ball2.y_vel = -1 * ball2.y_vel
+        # implement movement of both balls from eachother
+        # here:
         return None
     
     
