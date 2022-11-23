@@ -39,7 +39,7 @@ def main():
 
     max_balls = 50
     for i in range(0,max_balls):
-        ball = create_ball(ball_list,ballframe, max_tries = 100)
+        ball = create_ball(ball_list, ballframe, max_tries = 100)
         if ball != None:
             ball_list.append(ball)
 

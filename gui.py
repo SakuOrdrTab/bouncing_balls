@@ -19,7 +19,7 @@ def main_gui(ball_list, ballframe):
 
     scene.setBackgroundBrush(QColor(0,0,0,255))
 
-    draw_balls(ball_list, scene)
+    draw_balls(ball_list, scene) # ball physics keep balls in frame
     view.show()
     app.exec_()
 
