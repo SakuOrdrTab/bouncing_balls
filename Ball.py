@@ -21,12 +21,12 @@ class Ball:
     """class of Ball, location of the ball, velocities, mass, radius
     """    
     # instance variables:
-    # radius = 1
-    # x = 0
-    # y = 0
-    # x_vel = 0.0
-    # y_vel = 0.0
-    # mass = 100
+    # x int
+    # y int
+    # x_vel (float)
+    # y_vel (float)
+    # mass (int)
+    # radius (int)
     
     def __init__(self):
         """create Ball Object, initialize random location and speed (0.0 .. 5.0)
