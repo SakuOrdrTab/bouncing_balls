@@ -2,15 +2,17 @@
 # Ver 0.02 Proto-test for GUI
 # Ver 0.1 modules include rudimentary physics, rudimentary graphics, refractoring modules
 # Ver 0.1.1 Ball creation added, debugging
+# Ver 0.2 Added ball graphic scene frame
 import Ball
 import gui
+import Ball_frame
 
-def create_ball(ball_list, max_tries = 10):
+def create_ball(ball_list, frame, max_tries = 10):
     if len(ball_list) < 1:
-        return Ball.Ball()
+        return Ball.Ball(frame)
     for tries in range(0, max_tries):
-        creation = Ball.Ball()
-        if creation.touches_wall() == False:
+        creation = Ball.Ball(frame)
+        if creation.touches_wall(frame) == False:
             ok_ball = True
         else:
             ok_ball = False
@@ -33,10 +35,11 @@ def main():
     
     # debug:
     ball_list = []
+    ballframe = Ball_frame.Ball_frame(1,1,1080,780)
 
-    max_balls = 150
+    max_balls = 50
     for i in range(0,max_balls):
-        ball = create_ball(ball_list, max_tries = 500)
+        ball = create_ball(ball_list,ballframe, max_tries = 100)
         if ball != None:
             ball_list.append(ball)
 
@@ -45,7 +48,7 @@ def main():
 
     print("Balls in list: ", len(ball_list))
 
-    gui.main_gui(ball_list)
+    gui.main_gui(ball_list, ballframe)
     return None
 
 main()

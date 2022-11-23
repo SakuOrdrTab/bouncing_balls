@@ -5,17 +5,12 @@
 # Ver 0.04 added rudimentary bounces
 # Ver 0.05 rudimentary ball drawing with Pyside6
 # Ver 0.1 Rudimentary ball physics complete, ball draw, refractoring
-
-
-FRAME_MIN_X = 1
-FRAME_MAX_X = 500
-FRAME_MIN_Y = 1
-FRAME_MAX_Y = 500
+# Ver 0.2 Ball_frame added
 
 import random
 import math
 from PySide6.QtWidgets import QGraphicsEllipseItem
-from PySide6.QtGui import QBrush
+from PySide6.QtGui import QBrush, QColor
 
 class Ball:
     """class of Ball, location of the ball, velocities, mass, radius
@@ -27,16 +22,19 @@ class Ball:
     # y_vel (float)
     # mass (int)
     # radius (int)
+    # colour (QColor)
     
-    def __init__(self):
+    def __init__(self, frame):
         """create Ball Object, initialize random location and speed (0.0 .. 5.0)
         """    
-        self.x = random.randint(FRAME_MIN_X, FRAME_MAX_X)
-        self.y = random.randint(FRAME_MIN_Y, FRAME_MAX_Y)
+        self.x = random.randint(frame.min_x, frame.max_x)
+        self.y = random.randint(frame.min_y, frame.max_y)
         self.radius = random.randint(10,150)
         self.mass = int(self.radius*self.radius*3.14)
         self.x_vel = random.random() * 5
         self.y_vel = random.random() * 5
+        self.colour = QColor(random.randint(10, 255), random.randint(10, 255),
+                             random.randint(10, 255), 255) # totally black not allowed
         return None
 
     def __str__(self) -> str:
@@ -92,15 +90,15 @@ class Ball:
         return (center_dist - self.radius - ball.radius) <= 0
     
     # check if touches walls
-    def touches_wall(self):
+    def touches_wall(self, frame):
         """Checks if ball radius is over the frame, i.e. touches walls. Uses
         FRAME... constants for boundaries
 
         Returns:
             Boolean: returns True if ball is even partly outside frame constants
         """        
-        if (self.x + self.radius >= FRAME_MAX_X) or (self.x - self.radius <= FRAME_MIN_X) \
-            or (self.y + self.radius >= FRAME_MAX_Y) or (self.y - self.radius <= FRAME_MIN_Y):
+        if (self.x + self.radius >= frame.max_x) or (self.x - self.radius <= frame.min_x) \
+            or (self.y + self.radius >= frame.max_y) or (self.y - self.radius <= frame.min_y):
                 return True
         else:
             return False
@@ -108,11 +106,11 @@ class Ball:
     # make lambda for dist of two coords
     # def _dist lambda (x1, y1, x2, y2) : sqrt((x1-x2)**2 + (y1-y2**2))
     
-    def bounce_w_wall(self): # rudimentary non-physical wall collision
+    def bounce_w_wall(self, frame): # rudimentary non-physical wall collision
         # reverse speed
-        if self.x <= FRAME_MIN_X or self.x >= FRAME_MAX_X:
+        if self.x <= frame.min_x or self.x >= frame.max_x:
             self.x_vel = -1 * self.x_vel
-        if self.y <= FRAME_MIN_Y or self.y >= FRAME_MAX_Y:
+        if self.y <= frame.min_y or self.y >= frame.max_y:
             self.y_vel = -1 * self.y_vel
         # implement movement of ball away from wall
         # here:
@@ -136,8 +134,7 @@ class Ball:
         ball_render = QGraphicsEllipseItem(0, 0, self.radius, self.radius)
         ball_render.setPos(self.x, self.y)
  
-        ball_color = "#0F0F00"
-        brush = QBrush(ball_color)
+        brush = QBrush(self.colour)
         ball_render.setBrush(brush)
         return ball_render
     
