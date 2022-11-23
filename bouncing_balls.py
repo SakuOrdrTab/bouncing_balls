@@ -1,6 +1,8 @@
 # Ver 0.01
+# Ver 0.02 Proto-test for GUI
 
 import Ball
+import Ball_graphic_scene
 
 def main():
     # create balls
@@ -18,6 +20,7 @@ def main():
     print(ball2)
     print("Ball distance: {:.1f}".format(Ball.Ball.ball_distance(ball1, ball2)),
           "Balls overlap: ", Ball.Ball.overlap(ball1, ball2))
+    Ball_graphic_scene.main_gui()
     return None
 
 main()
