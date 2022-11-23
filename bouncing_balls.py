@@ -1,8 +1,9 @@
 # Ver 0.01
 # Ver 0.02 Proto-test for GUI
+# Ver 0.1 modules include rudimentary physics, rudimentary graphics, refractoring modules
 
 import Ball
-import Ball_graphic_scene
+import gui
 
 def main():
     # create balls
@@ -20,7 +21,8 @@ def main():
     print(ball2)
     print("Ball distance: {:.1f}".format(Ball.Ball.ball_distance(ball1, ball2)),
           "Balls overlap: ", Ball.Ball.overlap(ball1, ball2))
-    Ball_graphic_scene.main_gui()
+    ball_list = [ball1, ball2]
+    gui.main_gui(ball_list)
     return None
 
 main()

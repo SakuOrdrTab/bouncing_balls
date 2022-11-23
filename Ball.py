@@ -4,6 +4,7 @@
 # Ver 0.03 wall collision added, docstrings
 # Ver 0.04 added rudimentary bounces
 # Ver 0.05 rudimentary ball drawing with Pyside6
+# Ver 0.1 Rudimentary ball physics complete, ball draw, refractoring
 
 
 FRAME_MIN_X = 1
@@ -32,7 +33,7 @@ class Ball:
         """    
         self.x = random.randint(FRAME_MIN_X, FRAME_MAX_X)
         self.y = random.randint(FRAME_MIN_Y, FRAME_MAX_Y)
-        self.radius = random.randint(10,50)
+        self.radius = random.randint(10,150)
         self.mass = int(self.radius*self.radius*3.14)
         self.x_vel = random.random() * 5
         self.y_vel = random.random() * 5
@@ -44,6 +45,11 @@ class Ball:
             self.x, self.y, self.x_vel, self.y_vel, self.radius, self.mass)
         message += " Touches wall: "+str(self.touches_wall())
         return message
+
+    def move(self):
+        self.x += int(self.x_vel)
+        self.y += int(self.y_vel)
+        return None
 
     # for class
     def ball_distance(ball_a, ball_b):
@@ -110,6 +116,7 @@ class Ball:
             self.y_vel = -1 * self.y_vel
         # implement movement of ball away from wall
         # here:
+        self.move() # experimental
         return None
 
     def bounce_w_ball(self, ball2): # rudimentary non-physical collision with balls, just reverse speeds
@@ -120,19 +127,21 @@ class Ball:
         ball2.y_vel = -1 * ball2.y_vel
         # implement movement of both balls from eachother
         # here:
+        self.move() # experimental
+        ball2.move()
         return None
     
-    def draw_ball(self, *args, **kwargs):
+    def ball_sphere(self, *args, **kwargs):
+        # returns QtEllipse
         ball_render = QGraphicsEllipseItem(0, 0, self.radius, self.radius)
         ball_render.setPos(self.x, self.y)
  
         ball_color = "#0F0F00"
         brush = QBrush(ball_color)
         ball_render.setBrush(brush)
-        return None
+        return ball_render
     
-    
-    
+
     
 random.seed()
 print("Randomization complete.")

@@ -14,3 +14,6 @@ Project plan:
 
 5. Statistics incorporation? ver 4.0
   - (some)SQL, seaborn?
+
+Current stable version:
+0.1
