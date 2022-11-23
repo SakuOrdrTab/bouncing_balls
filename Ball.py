@@ -3,6 +3,7 @@
 # Ver 0.02 ball overlapping added
 # Ver 0.03 wall collision added, docstrings
 # Ver 0.04 added rudimentary bounces
+# Ver 0.05 rudimentary ball drawing with Pyside6
 
 
 FRAME_MIN_X = 1
@@ -12,6 +13,8 @@ FRAME_MAX_Y = 500
 
 import random
 import math
+from PySide6.QtWidgets import QGraphicsEllipseItem
+from PySide6.QtGui import QBrush
 
 class Ball:
     """class of Ball, location of the ball, velocities, mass, radius
@@ -119,6 +122,14 @@ class Ball:
         # here:
         return None
     
+    def draw_ball(self, *args, **kwargs):
+        ball_render = QGraphicsEllipseItem(0, 0, self.radius, self.radius)
+        ball_render.setPos(self.x, self.y)
+ 
+        ball_color = "#0F0F00"
+        brush = QBrush(ball_color)
+        ball_render.setBrush(brush)
+        return None
     
     
     

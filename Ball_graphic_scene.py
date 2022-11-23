@@ -1,7 +1,7 @@
 # Version 0.01 Just add graphicScene and graphicView and one ball, test
 
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsEllipseItem, QApplication
-from PySide6.QtGui import QBrush, QPen
+from PySide6.QtGui import QBrush, QPen, QColor
 from PySide6.QtCore import Qt
 
 
@@ -34,8 +34,9 @@ def main_gui():
 
     test_ball = QGraphicsEllipseItem(0, 0, 100, 100)
     test_ball.setPos(75, 30)
-
-    brush = QBrush(Qt.blue)
+ 
+    ball_color = "#0F0F00"
+    brush = QBrush(ball_color)
     test_ball.setBrush(brush)
 
     # pen = QPen(Qt.green)
