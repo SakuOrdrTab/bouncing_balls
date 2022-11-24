@@ -5,7 +5,8 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsEllipseIte
 from PySide6.QtGui import QBrush, QPen, QColor
 from PySide6.QtCore import Qt
 
-import lib.Ball_frame as Ball_frame
+import Ball_frame
+import Ball_graphic_scene
 
 def draw_balls(ball_list, scene):
     for ball in ball_list:
@@ -14,6 +15,7 @@ def draw_balls(ball_list, scene):
 
 def main_gui(ball_list, ballframe):
     app = QApplication([])
+    # scene = Ball_graphic_scene.Ball_graphic_scene(ballframe.min_x, ballframe.min_y, ballframe.max_x, ballframe.max_y)
     scene = QGraphicsScene(ballframe.min_x, ballframe.min_y, ballframe.max_x, ballframe.max_y)
     view = QGraphicsView(scene)
 

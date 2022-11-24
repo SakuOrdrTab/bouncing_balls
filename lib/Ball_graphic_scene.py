@@ -6,9 +6,9 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsEllipseIte
 from PySide6.QtGui import QBrush, QPen, QColor
 from PySide6.QtCore import Qt
 
-import lib.Ball_frame as Ball_frame
+# import lib.Ball_frame as Ball_frame
 
-class Ball_scene(QGraphicsScene):
+class Ball_graphic_scene(QGraphicsScene):
 
     def __init__(self, min_x, min_y, max_x, max_y):
         super().__init__(self, min_x, min_y, max_x, max_y)

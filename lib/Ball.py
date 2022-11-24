@@ -37,6 +37,10 @@ class Ball:
                              random.randint(10, 255), 255) # totally black not allowed
         return None
 
+    # make lambda for dist of two coords
+    _dist = lambda x1, y1, x2, y2 : math.sqrt((x1-x2)**2 + (y1-y2**2))
+    
+
     def __str__(self) -> str:
         message = "Ball obj id <{}>\n".format(id(self))
         message += " center x:{0} y:{1}\n v_x:{2:.2f} v_y:{3:.2f}\n radius: {4}, mass: {5}\n".format(
@@ -103,9 +107,7 @@ class Ball:
         else:
             return False
         
-    # make lambda for dist of two coords
-    # def _dist lambda (x1, y1, x2, y2) : sqrt((x1-x2)**2 + (y1-y2**2))
-    
+
     def bounce_w_wall(self, frame): # rudimentary non-physical wall collision
         # reverse speed
         if self.x <= frame.min_x or self.x >= frame.max_x:
