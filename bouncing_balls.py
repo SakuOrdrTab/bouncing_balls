@@ -3,9 +3,9 @@
 # Ver 0.1 modules include rudimentary physics, rudimentary graphics, refractoring modules
 # Ver 0.1.1 Ball creation added, debugging
 # Ver 0.2 Added ball graphic scene frame
-import Ball
-import gui
-import Ball_frame
+import lib.Ball as Ball
+import gui.gui as gui
+import lib.Ball_frame as Ball_frame
 
 def create_ball(ball_list, frame, max_tries = 10):
     if len(ball_list) < 1:
@@ -37,7 +37,7 @@ def main():
     ball_list = []
     ballframe = Ball_frame.Ball_frame(1,1,1080,780)
 
-    max_balls = 50
+    max_balls = 100
     for i in range(0,max_balls):
         ball = create_ball(ball_list, ballframe, max_tries = 100)
         if ball != None:

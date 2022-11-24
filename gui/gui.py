@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsEllipseIte
 from PySide6.QtGui import QBrush, QPen, QColor
 from PySide6.QtCore import Qt
 
-import Ball_frame
+import lib.Ball_frame as Ball_frame
 
 def draw_balls(ball_list, scene):
     for ball in ball_list:
