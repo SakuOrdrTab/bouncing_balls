@@ -37,11 +37,11 @@ def main():
     
     # debug:
     ball_list = []
-    ballframe = Ball_frame.Ball_frame(1,1,1080,780)
+    ballframe = Ball_frame.Ball_frame(1, 1, 1080, 780)
 
-    max_balls = 100
+    max_balls = 300
     for i in range(0,max_balls):
-        ball = create_ball(ball_list, ballframe, max_tries = 100)
+        ball = create_ball(ball_list, ballframe, max_tries = 1000)
         if ball != None:
             ball_list.append(ball)
 
