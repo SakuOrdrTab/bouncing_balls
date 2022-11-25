@@ -29,16 +29,16 @@ class Ball:
         """    
         self.x = random.randint(frame.min_x, frame.max_x)
         self.y = random.randint(frame.min_y, frame.max_y)
-        self.radius = random.randint(10,300)
-        self.mass = int(self.radius*self.radius*3.14)
+        self.radius = random.randint(10, 300)
+        self.mass = int(self.radius*self.radius * 3.14)
         self.x_vel = random.random() * 5
         self.y_vel = random.random() * 5
         self.colour = QColor(random.randint(10, 255), random.randint(10, 255),
                              random.randint(10, 255), 255) # totally black not allowed
         return None
 
-    # make lambda for dist of two coords
-    _dist = lambda x1, y1, x2, y2 : math.sqrt((x1-x2)**2 + (y1-y2**2))
+    # simple dist between two coordinates
+    def _dist(x1, y1, x2, y2) : return math.sqrt((x1-x2)**2 + (y1-y2**2))
     
 
     def __str__(self) -> str:
@@ -64,8 +64,7 @@ class Ball:
         Returns:
             float: Distance between the radiuses of the two balls
         """        
-        center_dist = math.sqrt((ball_a.x - ball_b.x)**2+(ball_a.y-ball_b.y)**2)
-        return center_dist - ball_a.radius - ball_b.radius
+        return math.sqrt((ball_a.x - ball_b.x) **2 + (ball_a.y - ball_b.y) **2) - ball_a.radius - ball_b.radius
 
     # for class
     def overlap(ball_a, ball_b):
@@ -90,8 +89,7 @@ class Ball:
         Returns:
             Boolean: Returns True if the arg ball is overlapping i.e. colliding
         """        
-        center_dist = math.sqrt((ball.x-self.x)**2+(ball.y-self.y)**2)
-        return (center_dist - self.radius - ball.radius) <= 0
+        return (math.sqrt((ball.x - self.x) **2 + (ball.y - self.y) **2) - self.radius - ball.radius) <= 0
     
     # check if touches walls
     def touches_wall(self, frame):
@@ -133,8 +131,8 @@ class Ball:
     
     def ball_sphere(self, *args, **kwargs):
         # returns QtEllipse
-        ball_render = QGraphicsEllipseItem(0, 0, self.radius, self.radius)
-        ball_render.setPos(self.x, self.y)
+        ball_render = QGraphicsEllipseItem(0, 0, self.radius * 2, self.radius * 2)
+        ball_render.setPos(self.x - self.radius, self.y - self.radius)
  
         brush = QBrush(self.colour)
         ball_render.setBrush(brush)

@@ -13,6 +13,7 @@ def draw_balls(ball_list, scene):
         scene.addItem(ball.ball_sphere())
     return None
 
+# class Ball_graphicscene
 def main_gui(ball_list, ballframe):
     app = QApplication([])
     # scene = Ball_graphic_scene.Ball_graphic_scene(ballframe.min_x, ballframe.min_y, ballframe.max_x, ballframe.max_y)
@@ -24,5 +25,5 @@ def main_gui(ball_list, ballframe):
     draw_balls(ball_list, scene) # ball physics keep balls in frame
     view.show()
     app.exec_()
-
+    
     return None
