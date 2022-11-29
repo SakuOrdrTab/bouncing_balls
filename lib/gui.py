@@ -94,8 +94,8 @@ def main_gui(ball_list, ballframe):
 
     draw_balls(ball_list, scene) # ball physics keep balls in frame
     threadpool = QThreadPool() # Init multithreading
-    worker = Worker(ctrl, fn=move_balls) # create a worker in parallel thread
     ctrl = {} # TLE: define control parameter as dict. I understood this provides a pointer to the variable. Therefore it can be accessed outside the function
+    worker = Worker(ctrl, fn=move_balls) # create a worker in parallel thread
     threadpool.start(worker) # TLE: Begin parallel process
     view.show()
     app.exec_()
