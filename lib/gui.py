@@ -74,10 +74,12 @@ def draw_balls(ball_list, scene):
     return None
 
 # TLE: actual function to move balls. Could be any other functions meant to run in parallel thread
-def move_balls(ctrl, *args, **kwargs):
+def move_balls(ctrl, ball_list):
     ctrl['break'] = False # TLE: Allow running the function
     while True: # TLE: Run forever
-       print("Move ball, move!")
+       # actual move
+       for ball in ball_list:
+            ball.move()
        if ctrl['break']: # TLE: If ctrl value is set true by main_gui, stop execution of the funtion
             print('break because flag raised')
             break # or in this case: retur
