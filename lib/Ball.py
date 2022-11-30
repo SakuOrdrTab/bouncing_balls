@@ -35,6 +35,13 @@ class Ball:
         self.y_vel = random.random() * 5
         self.colour = QColor(random.randint(10, 255), random.randint(10, 255),
                              random.randint(10, 255), 255) # totally black not allowed
+
+        ball_render = QGraphicsEllipseItem(0, 0, self.radius * 2, self.radius * 2)
+        ball_render.setPos(self.x - self.radius, self.y - self.radius)
+ 
+        brush = QBrush(self.colour)
+        ball_render.setBrush(brush)
+        self.ball_ellipse = ball_render
         return None
 
     # simple dist between two coordinates
@@ -129,14 +136,15 @@ class Ball:
         ball2.move()
         return None
     
-    def ball_sphere(self, *args, **kwargs):
-        # returns QtEllipse
-        ball_render = QGraphicsEllipseItem(0, 0, self.radius * 2, self.radius * 2)
-        ball_render.setPos(self.x - self.radius, self.y - self.radius)
- 
-        brush = QBrush(self.colour)
-        ball_render.setBrush(brush)
-        return ball_render
+#    def ball_sphere(self, *args, **kwargs):
+#        # returns QtEllipse
+#        ball_render = QGraphicsEllipseItem(0, 0, self.radius * 2, self.radius * 2)
+#        ball_render.setPos(self.x - self.radius, self.y - self.radius)
+# 
+#        brush = QBrush(self.colour)
+#        ball_render.setBrush(brush)
+#        self.ball_ellipse = ball_render
+#        return None
     
 
     

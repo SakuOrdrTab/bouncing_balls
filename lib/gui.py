@@ -70,8 +70,14 @@ class Worker(QRunnable):
 
 def draw_balls(ball_list, scene):
     for ball in ball_list:
-        scene.addItem(ball.ball_sphere())
+        scene.addItem(ball.ball_ellipse)
     return None
+
+def set_ball_positions(ball_list):
+    for ball in ball_list:
+        ball.ball_ellipse.setPos(ball.x - ball.radius, ball.y - ball.radius)
+    return None
+
 
 # TLE: actual function to move balls. Could be any other functions meant to run in parallel thread
 def move_balls(ctrl, *args, **kwargs):
@@ -81,12 +87,11 @@ def move_balls(ctrl, *args, **kwargs):
         # print('asdf')
     #    actual move
         scene = kwargs['scene']
-        print(scene)
         ball_list = kwargs['ball_list']
         for ball in ball_list:
             ball.move()
-        ball_list[0].x += 2  
-        draw_balls(ball_list, scene)
+        set_ball_positions(ball_list)
+        # draw_balls(ball_list, scene)
         # for ball in ball_list:
         #     ball.draw()
         if ctrl['break']: # TLE: If ctrl value is set true by main_gui, stop execution of the funtion
