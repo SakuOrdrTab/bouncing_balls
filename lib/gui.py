@@ -55,7 +55,7 @@ class Worker(QRunnable):
         '''
         Initialise the runner function with passed args, kwargs.
         '''
-
+        # print(self.kwargs)
         # Retrieve args/kwargs here; and fire processing using them
         try:
             result = self.fn(self.ctrl, *self.args, **self.kwargs)
@@ -74,16 +74,25 @@ def draw_balls(ball_list, scene):
     return None
 
 # TLE: actual function to move balls. Could be any other functions meant to run in parallel thread
-def move_balls(ctrl, ball_list):
+def move_balls(ctrl, *args, **kwargs):
     ctrl['break'] = False # TLE: Allow running the function
     while True: # TLE: Run forever
-       # actual move
-       for ball in ball_list:
+        # print(kwargs)
+        # print('asdf')
+    #    actual move
+        scene = kwargs['scene']
+        print(scene)
+        ball_list = kwargs['ball_list']
+        for ball in ball_list:
             ball.move()
-       if ctrl['break']: # TLE: If ctrl value is set true by main_gui, stop execution of the funtion
+        ball_list[0].x += 2  
+        draw_balls(ball_list, scene)
+        # for ball in ball_list:
+        #     ball.draw()
+        if ctrl['break']: # TLE: If ctrl value is set true by main_gui, stop execution of the funtion
             print('break because flag raised')
             break # or in this case: retur
-       time.sleep(0.1)
+        time.sleep(0.1)
 
 # class Ball_graphicscene
 def main_gui(ball_list, ballframe):
@@ -97,7 +106,7 @@ def main_gui(ball_list, ballframe):
     draw_balls(ball_list, scene) # ball physics keep balls in frame
     threadpool = QThreadPool() # Init multithreading
     ctrl = {} # TLE: define control parameter as dict. I understood this provides a pointer to the variable. Therefore it can be accessed outside the function
-    worker = Worker(ctrl, fn=move_balls) # create a worker in parallel thread
+    worker = Worker(ctrl, fn=move_balls, ball_list=ball_list, scene=scene) # create a worker in parallel thread
     threadpool.start(worker) # TLE: Begin parallel process
     view.show()
     app.exec_()
