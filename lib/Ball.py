@@ -149,4 +149,4 @@ class Ball:
 
     
 random.seed()
-print("Randomization complete.")
+print("Randomization complete. (TLE: is random.seet() necessary here? It runs on every import, but maybe rand needs to be initialized?)")
