@@ -82,7 +82,10 @@ class Ball_window(QGraphicsScene):
             self.kwargs['frame_size']['max_y'],
             )
         for i in range(0, self.kwargs['max_balls']):
-            self.create_ball(max_tries = 10)
+            if 'max_tries' in kwargs:
+                self.create_ball(max_tries = kwargs['max_tries'])
+            else:
+                self.create_ball()
         print("Balls in list: ", len(self.ball_list))
         self.scene = QGraphicsScene(
             self.kwargs['frame_size']['min_x'],
@@ -131,7 +134,7 @@ class Ball_window(QGraphicsScene):
                 self.ball_list.append(creation)
         for tries in range(0, max_tries):
             creation = Ball.Ball(self.ballframe)
-            ball_free_of_walls = ~creation.touches_wall(self.ballframe)
+            ball_free_of_walls = ~creation.touches_wall(self.ballframe) #?
             ball_doesnt_touch_another_ball = True
             if ball_free_of_walls:
                 for ball in self.ball_list:
@@ -175,7 +178,7 @@ class Ball_window(QGraphicsScene):
                 print(f'''class_ctrl['break'] = {class_ctrl['break']}''')
                 print(f'''worker_ctrl['break'] = {worker_ctrl['break']}''')
                 return False
-            time.sleep(0.1)    
+            time.sleep(0.01)    
         return None
 
 def main():

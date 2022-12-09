@@ -4,6 +4,7 @@
 # Ver 0.1.1 Ball creation added, debugging
 # Ver 0.2 Added ball graphic scene frame
 # Ver 0.2.1 Directory restructuring
+# Ver 0.2.2 added max_tries to kwarg
 from PySide6.QtWidgets import QMainWindow, QPushButton
 
 import PySide6
@@ -27,12 +28,13 @@ class MainWindow(QMainWindow):
 
     def start_ball_window(self):
         if self.ball_window is None: # Check if window is already created not to create multiple child windows
-            self.ball_window = Ball_window.Ball_window( max_balls=self.kwargs['max_balls'], frame_size = self.kwargs['frame_size'])
+            self.ball_window = Ball_window.Ball_window( max_balls=self.kwargs['max_balls'], frame_size = self.kwargs['frame_size'], max_tries=self.kwargs['max_tries'])
         self.ball_window.view.show() # If window is created and then closed, it will reappear because of this
 
 def main():
 
-    max_balls = 100
+    max_balls = 50 # seems to work best
+    max_tries = 100
     frame_size = {
         'min_x': 1,
         'min_y': 1,
@@ -40,7 +42,11 @@ def main():
         'max_y': 780,
     }
     app = PySide6.QtWidgets.QApplication(sys.argv)
-    main = MainWindow(frame_size=frame_size, max_balls=max_balls)
+    main = MainWindow(
+                      frame_size=frame_size,
+                      max_balls=max_balls,
+                      max_tries=max_tries
+                    )
     main.show()
     app.exec()
 

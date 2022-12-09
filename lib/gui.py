@@ -15,7 +15,7 @@ import Ball_window
 
 def main_gui(ball_list, ballframe):
     app = QApplication([])
-    ball_window = Ball_window.Ball_window(ballframe, ball_list)
+    ball_window = Ball_window.Ball_window(ballframe, ball_list, maxtries = 100)
 
     
     Ball_window.show()
