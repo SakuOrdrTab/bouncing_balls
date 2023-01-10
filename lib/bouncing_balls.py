@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
 
 def main():
 
-    max_balls = 50 # seems to work best
+    max_balls = 30 # seems to work best
     max_tries = 100
     frame_size = {
         'min_x': 1,

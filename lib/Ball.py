@@ -13,7 +13,8 @@ from PySide6.QtWidgets import QGraphicsEllipseItem
 from PySide6.QtGui import QBrush, QColor
 
 class Ball:
-    """class of Ball, location of the ball, velocities, mass, radius
+    """
+    class of Ball, location of the ball, velocities, mass, radius, holds also QEllipseItem to draw the ball
     """    
     # instance variables:
     # x int
@@ -25,8 +26,12 @@ class Ball:
     # colour (QColor)
     
     def __init__(self, frame):
-        """create Ball Object, initialize random location and speed (0.0 .. 5.0)
-        """    
+        """Constructor for Ball, sets random speed, colour and position.
+
+        Args:
+            frame (Ball_frame): frame for balls and physics
+
+        """         
         self.x = random.randint(frame.min_x, frame.max_x)
         self.y = random.randint(frame.min_y, frame.max_y)
         self.radius = random.randint(10, 300)
@@ -49,6 +54,7 @@ class Ball:
     
 
     def __str__(self) -> str:
+        # string representation if needed
         message = "Ball obj id <{}>\n".format(id(self))
         message += " center x:{0} y:{1}\n v_x:{2:.2f} v_y:{3:.2f}\n radius: {4}, mass: {5}\n".format(
             self.x, self.y, self.x_vel, self.y_vel, self.radius, self.mass)
@@ -56,6 +62,11 @@ class Ball:
         return message
 
     def move(self):
+        """moves ball according to its speed, does not refresh QEllipseItem position
+
+        Returns:
+            None
+        """        
         self.x += int(self.x_vel)
         self.y += int(self.y_vel)
         return None
@@ -114,6 +125,15 @@ class Ball:
         
 
     def bounce_w_wall(self, frame): # rudimentary non-physical wall collision
+        """Bounces ball with frame, i.e. reverses according speed.
+        Rudimentary yet, nonphysical
+
+        Args:
+            frame (Ball_frame): the frame for physics
+
+        Returns:
+            None
+        """        
         # reverse speed
         if self.x <= frame.min_x or self.x >= frame.max_x:
             self.x_vel = -1 * self.x_vel
@@ -124,7 +144,16 @@ class Ball:
         self.move() # experimental
         return None
 
-    def bounce_w_ball(self, ball2): # rudimentary non-physical collision with balls, just reverse speeds
+    def bounce_w_ball(self, ball2):
+        """Bounces two balls.
+        Rudimentary nonphysical, just reverses rthe speeds
+
+        Args:
+            ball2 (Ball): second ball, first is self
+
+        Returns:
+            None
+        """        
         # reverse speeds
         self.x_vel = -1 * self.x_vel
         ball2.x_vel = -1 * ball2.x_vel
@@ -136,17 +165,6 @@ class Ball:
         ball2.move()
         return None
     
-#    def ball_sphere(self, *args, **kwargs):
-#        # returns QtEllipse
-#        ball_render = QGraphicsEllipseItem(0, 0, self.radius * 2, self.radius * 2)
-#        ball_render.setPos(self.x - self.radius, self.y - self.radius)
-# 
-#        brush = QBrush(self.colour)
-#        ball_render.setBrush(brush)
-#        self.ball_ellipse = ball_render
-#        return None
-    
-
     
 random.seed()
-print("Randomization complete. (TLE: is random.seet() necessary here? It runs on every import, but maybe rand needs to be initialized?)")
+print("Randomization complete. (TLE: is random.seed() necessary here? It runs on every import, but maybe rand needs to be initialized?)")

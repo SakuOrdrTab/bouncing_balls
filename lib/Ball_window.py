@@ -65,9 +65,12 @@ class Worker(QRunnable):
             if result == False: # Had to hack False as return if the worker is killed by Ball_window. Otherwise self.signals is deleted and emit() results in error
                 return
             else:
-                self.signals.finished.emit()  # Don
+                self.signals.finished.emit()  # Done
 
 class Ball_window(QGraphicsScene):
+    """
+    A Window (QGraphicsscene) to show the balls within GUI. Ballframe sets the size
+    """    
 
     def __init__(self, *args, **kwargs):
         super(Ball_window, self).__init__()
@@ -99,8 +102,9 @@ class Ball_window(QGraphicsScene):
         self.class_ctrl = { 
             'break': False, # Setting this True stops all worker threads of the class
         }
+        # print(f'Ball count in window = {len(self.scene.items())}')
         self.show_balls()
-        self.start_worker('pallinsiirtelijä', self.move_balls)
+        self.start_worker('ballmover', self.move_balls)
 
     def closeEvent(self,event):
         print('Close event')
@@ -128,6 +132,12 @@ class Ball_window(QGraphicsScene):
         print(f'worker "{name}" started')
 
     def create_ball(self, max_tries = 10):
+        """Tries to create ball within a free space in scene. 
+        Has maximum tries, so that it doesn't try forever if scene is almost full
+
+        Args:
+            max_tries (int, optional): Maximum tries to make a new ball. Defaults to 10.
+        """        
         if len(self.ball_list) < 1:
             creation = Ball.Ball(self.ballframe)
             if not creation.touches_wall(self.ballframe):
@@ -145,16 +155,36 @@ class Ball_window(QGraphicsScene):
                 self.ball_list.append(creation)
 
     def show_balls(self):
+        """Add all QEllipseitems(Ball Obj) to the scene in ballwindow. Goes through ball_list
+
+        Returns:
+            None
+        """        
         for ball in self.ball_list:
             self.scene.addItem(ball.ball_ellipse)
         return None
 
     def set_ball_positions(self):
+        """Set positions in QEllipseitems in Ball objects to match x and y within the Ball object instance
+        that are derived from physics
+
+        Returns:
+            None
+        """        
         for ball in self.ball_list:
             ball.ball_ellipse.setPos(ball.x - ball.radius, ball.y - ball.radius)
         return None
 
     def move_balls(self, class_ctrl, worker_ctrl, *args, **kwargs):
+        """Move all balls in ball_list, continuous loop within a QThread
+
+        Args:
+            class_ctrl (_type_): _description_
+            worker_ctrl (_type_): _description_
+
+        Returns:
+            None
+        """        
         worker_ctrl['break'] = False # TLE: Allow running the function
         while True: # TLE: Run forever
             for ball in self.ball_list:
@@ -178,7 +208,8 @@ class Ball_window(QGraphicsScene):
                 print(f'''class_ctrl['break'] = {class_ctrl['break']}''')
                 print(f'''worker_ctrl['break'] = {worker_ctrl['break']}''')
                 return False
-            time.sleep(0.01)    
+            # print(f'Ball count in window = {len(self.scene.items())}')
+            time.sleep(0.01) # wait for another refresh cycle
         return None
 
 def main():
