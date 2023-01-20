@@ -21,8 +21,6 @@ Current stable version:
 Known issues:
 - Warning issued: "QObject::startTimer: Timers cannot be started from another thread" but this does not halt program
 - Program freezes after some time
-- ballcount is not right
-- physics are still wrong; the collisions are not physical on intent, but the balls overlap etc
-- Invisible balls exist?
+- Invisible balls definately exist
 - The program works only with certain parameters of balls and max_tries
 - Graphics are with artefacts
