@@ -28,7 +28,9 @@ class MainWindow(QMainWindow):
 
     def start_ball_window(self):
         if self.ball_window is None: # Check if window is already created not to create multiple child windows
-            self.ball_window = Ball_window.Ball_window( max_balls=self.kwargs['max_balls'], frame_size = self.kwargs['frame_size'], max_tries=self.kwargs['max_tries'])
+            self.ball_window = Ball_window.Ball_window( max_balls=self.kwargs['max_balls'],
+                                                       frame_size = self.kwargs['frame_size'],
+                                                       max_tries=self.kwargs['max_tries'])
         self.ball_window.view.show() # If window is created and then closed, it will reappear because of this
 
 def main():
