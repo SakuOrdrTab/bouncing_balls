@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 
 def main():
 
-    max_balls = 30 # seems to work best
+    max_balls_wanted = 100 # seems to work best
     max_tries = 100
     frame_size = {
         'min_x': 1,
@@ -46,7 +46,7 @@ def main():
     app = PySide6.QtWidgets.QApplication(sys.argv)
     main = MainWindow(
                       frame_size=frame_size,
-                      max_balls=max_balls,
+                      max_balls=max_balls_wanted,
                       max_tries=max_tries
                     )
     main.show()

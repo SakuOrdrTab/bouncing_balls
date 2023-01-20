@@ -146,19 +146,33 @@ class Ball:
 
     def bounce_w_ball(self, ball2):
         """Bounces two balls.
-        Rudimentary nonphysical, just reverses rthe speeds
-
+        Simplistic physical, 1-dim collisions calculated
+        separately for x and y
+        
         Args:
             ball2 (Ball): second ball, first is self
 
         Returns:
             None
         """        
-        # reverse speeds
-        self.x_vel = -1 * self.x_vel
-        ball2.x_vel = -1 * ball2.x_vel
-        self.y_vel = -1 * self.y_vel
-        ball2.y_vel = -1 * ball2.y_vel
+        # rudimentary version: reverse speeds
+        # self.x_vel = -1 * self.x_vel
+        # ball2.x_vel = -1 * ball2.x_vel
+        # self.y_vel = -1 * self.y_vel
+        # ball2.y_vel = -1 * ball2.y_vel
+        
+        # Okay, this is still a simplistication. It is considered that
+        # momentum is preserved in both x and y dimensions, so they are
+        # calculated separately. Temporary variables needed, *_temp
+        x_vel_self_temp = ((self.mass - ball2.mass) * self.x_vel + 2 * ball2.mass * ball2.x_vel) / (self.mass + ball2.mass)
+        x_vel_ball2_temp = self.x_vel + x_vel_self_temp - ball2.x_vel
+        y_vel_self_temp = ((self.mass - ball2.mass) * self.y_vel + 2 * ball2.mass * ball2.y_vel) / (self.mass + ball2.mass)
+        y_vel_ball2_temp = self.y_vel + y_vel_self_temp - ball2.y_vel
+        self.x_vel = x_vel_self_temp # now implement speeds according to above
+        self.y_vel = y_vel_self_temp
+        ball2.x_vel = x_vel_ball2_temp
+        ball2.y_vel = y_vel_ball2_temp
+        
         # implement movement of both balls from eachother
         # here:
         self.move() # experimental

@@ -138,10 +138,13 @@ class Ball_window(QGraphicsScene):
         Args:
             max_tries (int, optional): Maximum tries to make a new ball. Defaults to 10.
         """        
-        if len(self.ball_list) < 1:
-            creation = Ball.Ball(self.ballframe)
-            if not creation.touches_wall(self.ballframe):
-                self.ball_list.append(creation)
+        # following deemed unnecessary, because even this does not guarantee one ball
+        # in ball_list..
+        # if len(self.ball_list) < 1:
+        #     creation = Ball.Ball(self.ballframe)
+        #     if not creation.touches_wall(self.ballframe):
+        #         self.ball_list.append(creation)
+        #         return None # ready for return, ball created
         for tries in range(0, max_tries):
             creation = Ball.Ball(self.ballframe)
             ball_free_of_walls = ~creation.touches_wall(self.ballframe) #?
@@ -153,6 +156,8 @@ class Ball_window(QGraphicsScene):
                         break # Another iteration might set above True
             if ball_free_of_walls & ball_doesnt_touch_another_ball:
                 self.ball_list.append(creation)
+                return None # bugfix: has to return not to fill ball_list
+        return None
 
     def show_balls(self):
         """Add all QEllipseitems(Ball Obj) to the scene in ballwindow. Goes through ball_list
