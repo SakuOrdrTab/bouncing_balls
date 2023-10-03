@@ -76,20 +76,26 @@ class Ball_window(QGraphicsScene):
         super(Ball_window, self).__init__()
         self.args = args
         self.kwargs = kwargs
-        self.worker_list = []
         self.ball_list = []
+        
+        # create a ball_frame
         self.ballframe = Ball_frame.Ball_frame(
             self.kwargs['frame_size']['min_x'],
             self.kwargs['frame_size']['min_y'],
             self.kwargs['frame_size']['max_x'],
             self.kwargs['frame_size']['max_y'],
             )
+        
+        # create a ball_list
+        self.worker_list = []
         for i in range(0, self.kwargs['max_balls']):
             if 'max_tries' in kwargs:
                 self.create_ball(max_tries = kwargs['max_tries'])
             else:
                 self.create_ball()
         print("Balls in list: ", len(self.ball_list))
+        
+        # create scene
         self.scene = QGraphicsScene(
             self.kwargs['frame_size']['min_x'],
             self.kwargs['frame_size']['min_y'],
