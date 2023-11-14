@@ -33,10 +33,10 @@ class Ball:
         brush = QBrush(self.colour)
         ball_render.setBrush(brush)
         self.ball_ellipse = ball_render
-        return None
+        self.frame = frame
 
     # simple dist between two coordinates
-    def _dist(x1, y1, x2, y2) : return math.sqrt((x1-x2)**2 + (y1-y2**2))
+    def _dist(x1, y1, x2, y2) : return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     def __str__(self) -> str:
         # string representation if needed
@@ -57,6 +57,7 @@ class Ball:
         return None
 
     # for class
+    @staticmethod
     def ball_distance(ball_a, ball_b):
         """Distance between two balls
 
@@ -68,19 +69,6 @@ class Ball:
             float: Distance between the radiuses of the two balls
         """        
         return math.sqrt((ball_a.x - ball_b.x) ** 2 + (ball_a.y - ball_b.y) ** 2) - ball_a.radius - ball_b.radius
-
-    # for class
-    def overlap(ball_a, ball_b):
-        """Checks if two balls overlap
-
-        Args:
-            ball_a (Ball): first ball
-            ball_b (Ball): second ball
-
-        Returns:
-            Boolean: Returns True if balls overlap
-        """        
-        return Ball.ball_distance(ball_a, ball_b) < 0
 
     # duplicate of distance function for speed
     def overlaps(self, ball):
@@ -95,21 +83,20 @@ class Ball:
         return (math.sqrt((ball.x - self.x) **2 + (ball.y - self.y) **2) - self.radius - ball.radius) <= 0
     
     # check if touches walls
-    def touches_wall(self, frame):
+    def touches_wall(self):
         """Checks if ball radius is over the frame, i.e. touches walls. Uses
         FRAME... constants for boundaries
 
         Returns:
             Boolean: returns True if ball is even partly outside frame constants
         """        
-        if (self.x + self.radius >= frame.max_x) or (self.x - self.radius <= frame.min_x) \
-            or (self.y + self.radius >= frame.max_y) or (self.y - self.radius <= frame.min_y):
+        if (self.x + self.radius >= self.frame.max_x) or (self.x - self.radius <= self.frame.min_x) \
+            or (self.y + self.radius >= self.frame.max_y) or (self.y - self.radius <= self.frame.min_y):
                 return True
         else:
             return False
-        
 
-    def bounce_w_wall(self, frame): # rudimentary non-physical wall collision
+    def bounce_w_wall(self): # rudimentary non-physical wall collision
         """Bounces ball with frame, i.e. reverses according speed.
         Rudimentary yet, nonphysical
 
@@ -120,9 +107,9 @@ class Ball:
             None
         """        
         # reverse speed
-        if self.x <= frame.min_x or self.x >= frame.max_x:
+        if self.x <= self.frame.min_x or self.x >= self.frame.max_x:
             self.x_vel = -1 * self.x_vel
-        if self.y <= frame.min_y or self.y >= frame.max_y:
+        if self.y <= self.frame.min_y or self.y >= self.frame.max_y:
             self.y_vel = -1 * self.y_vel
         # implement movement of ball away from wall
         # here:
@@ -328,7 +315,7 @@ class Ball_window(QGraphicsScene):
         #         return None # ready for return, ball created
         for tries in range(0, max_tries):
             creation = Ball(self.ballframe)
-            ball_free_of_walls = ~creation.touches_wall(self.ballframe) #?
+            ball_free_of_walls = ~creation.touches_wall() #?
             ball_doesnt_touch_another_ball = True
             if ball_free_of_walls:
                 for ball in self.ball_list:
