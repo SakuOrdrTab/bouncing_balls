@@ -192,6 +192,7 @@ class WorkerSignals(QObject):
     finished = Signal()  # QtCore.Signal
     error = Signal(tuple)
     result = Signal(object)
+    update_positions = Signal(list)
 
 # TLE: Mostly copy-pasted from https://www.pythonguis.com/tutorials/multithreading-pyside-applications-qthreadpool/
 # to stop running threads at window exit with ctrl, adapted from https://stackoverflow.com/questions/68163578/stopping-an-infinite-loop-in-a-worker-thread-in-pyqt5-the-simplest-way
@@ -205,7 +206,7 @@ class Worker(QRunnable):
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
-        self.signals = WorkerSignals()
+        self.signals = kwargs.get('signals', WorkerSignals())  # Use provided signals or create a new one
         self.class_ctrl = class_ctrl # Setting true stops all threads of class
         self.worker_ctrl = worker_ctrl # Setting true stops only this thread 
 
@@ -249,6 +250,12 @@ class Ball_window(QGraphicsScene):
             self.kwargs['frame_size']['max_y'],
             )
         
+         # Initialize WorkerSignals instance
+        self.worker_signals = WorkerSignals()
+
+        # Connecting the signal to the slot
+        self.worker_signals.update_positions.connect(self.update_ball_positions)        
+        
         # create a ball_list
         self.worker_list = []
         for i in range(0, self.kwargs['max_balls']):
@@ -275,6 +282,10 @@ class Ball_window(QGraphicsScene):
         self.show_balls()
         self.start_worker('ballmover', self.move_balls)
 
+    def update_ball_positions(self, positions):
+        for ball, pos in zip(self.ball_list, positions):
+            ball.ball_ellipse.setPos(*pos)
+
     def closeEvent(self,event):
         print('Close event')
         self.class_ctrl['break'] = True
@@ -289,8 +300,8 @@ class Ball_window(QGraphicsScene):
             return
         # self.label.setText(f"Running {threadCount} Threads")
         pool = QThreadPool.globalInstance()
-        worker_ctrl = {} # Setting this control to True stops only this worker thread
-        worker = Worker(self.class_ctrl, worker_ctrl, fn=fn)
+        worker_ctrl = {}  # Setting this control to True stops only this worker thread
+        worker = Worker(self.class_ctrl, worker_ctrl, fn=fn, signals=self.worker_signals)
         worker_dict = {
             'name': name,
             'worker_ctrl': worker_ctrl,
@@ -342,42 +353,22 @@ class Ball_window(QGraphicsScene):
             ball.ball_ellipse.setPos(ball.x - ball.radius, ball.y - ball.radius)
         return None
 
-    def move_balls(self, class_ctrl, worker_ctrl, *args, **kwargs):
-        """Move all balls in ball_list, continuous loop within a QThread
-
-        Args:
-            class_ctrl (_type_): _description_
-            worker_ctrl (_type_): _description_
-
-        Returns:
-            None
-        """        
-        worker_ctrl['break'] = False # TLE: Allow running the function
-        while True: # TLE: Run forever
+    def move_balls(self, class_ctrl, worker_ctrl, signals, *args, **kwargs):
+        worker_ctrl['break'] = False
+        while True:
+            ball_positions = []
             for ball in self.ball_list:
                 ball.move()
                 if ball.touches_wall():
                     ball.bounce_w_wall()
-                for b in self.ball_list:
-                    if b != ball:
-                        if b.overlaps(ball):
-                            b.bounce_w_ball(ball)
-                # THE LINE BELOW SEEMS TO CREATE ERROR: 
-                # QObject::startTimer: Timers cannot be started from another thread.
-                # Maybe set_ball_positions() has another timer 
-                self.set_ball_positions() 
-            stop_worker = ( # Check if this thread or all threads of the class are set to stop
-                    (worker_ctrl['break'] == True)
-                    | (class_ctrl['break'] == True)
-                )
-            if stop_worker:
-                print('break because flag raised')
-                print(f'''class_ctrl['break'] = {class_ctrl['break']}''')
-                print(f'''worker_ctrl['break'] = {worker_ctrl['break']}''')
+                for other_ball in self.ball_list:
+                    if other_ball != ball and other_ball.overlaps(ball):
+                        other_ball.bounce_w_ball(ball)
+                ball_positions.append((ball.x - ball.radius, ball.y - ball.radius))
+            signals.update_positions.emit(ball_positions)  # Emitting the signal with positions
+            if class_ctrl['break'] or worker_ctrl['break']:
                 return False
-            # print(f'Ball count in window = {len(self.scene.items())}')
-            time.sleep(0.01) # wait for another refresh cycle
-        return None
+            time.sleep(0.01)
 
 class MainWindow(QMainWindow):
 
