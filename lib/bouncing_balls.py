@@ -215,6 +215,7 @@ class Worker(QRunnable):
         Initialise the runner function with passed args, kwargs.
         '''
         # Retrieve args/kwargs here; and fire processing using them
+        result = None # Assign a default value to avoid UnbounlocalError
         try:
             result = self.fn(self.class_ctrl, self.worker_ctrl, *self.args, **self.kwargs)
         except:
@@ -306,13 +307,6 @@ class Ball_window(QGraphicsScene):
         Args:
             max_tries (int, optional): Maximum tries to make a new ball. Defaults to 10.
         """        
-        # following deemed unnecessary, because even this does not guarantee one ball
-        # in ball_list..
-        # if len(self.ball_list) < 1:
-        #     creation = Ball.Ball(self.ballframe)
-        #     if not creation.touches_wall(self.ballframe):
-        #         self.ball_list.append(creation)
-        #         return None # ready for return, ball created
         for tries in range(0, max_tries):
             creation = Ball(self.ballframe)
             ball_free_of_walls = ~creation.touches_wall() #?
@@ -362,8 +356,8 @@ class Ball_window(QGraphicsScene):
         while True: # TLE: Run forever
             for ball in self.ball_list:
                 ball.move()
-                if ball.touches_wall(self.ballframe):
-                    ball.bounce_w_wall(self.ballframe)
+                if ball.touches_wall():
+                    ball.bounce_w_wall()
                 for b in self.ball_list:
                     if b != ball:
                         if b.overlaps(ball):
