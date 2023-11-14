@@ -1,4 +1,4 @@
-# Started whole new refactoring of code to get bugs fixed, all the classes are in the same script
+# first stable version 1.0
 
 from PySide6.QtWidgets import QMainWindow, QPushButton, QApplication, QGraphicsScene, QGraphicsView, QGraphicsEllipseItem
 from PySide6.QtGui import QColor, QBrush
@@ -6,12 +6,19 @@ from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
 
 import sys, time, traceback, math, random
 
+# Constants:
+WIDTH = 1080
+HEIGHT = 780
+MAX_BALLS = 10
+MAX_TRIES = 100
+MIN_RADIUS = 5
+MAX_RADIUS = 50
 
 class Ball:
     """
     class of Ball, location of the ball, velocities, mass, radius, holds also QEllipseItem to draw the ball
-    """        
-    def __init__(self, frame):
+    """
+    def __init__(self, min_radius : int, max_radius : int, frame : 'Ball_frame') -> None:
         """Constructor for Ball, sets random speed, colour and position.
 
         Args:
@@ -20,7 +27,7 @@ class Ball:
         """         
         self.x = random.randint(frame.min_x, frame.max_x)
         self.y = random.randint(frame.min_y, frame.max_y)
-        self.radius = random.randint(10, 300)
+        self.radius = random.randint(min_radius, max_radius)
         self.mass = int(self.radius*self.radius * 3.14)
         self.x_vel = random.random() * 5
         self.y_vel = random.random() * 5
@@ -36,7 +43,8 @@ class Ball:
         self.frame = frame
 
     # simple dist between two coordinates
-    def _dist(x1, y1, x2, y2) : return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+    def _dist(x1 : int, y1 : int, x2 : int, y2 : int) -> float:
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     def __str__(self) -> str:
         # string representation if needed
@@ -58,7 +66,7 @@ class Ball:
 
     # for class
     @staticmethod
-    def ball_distance(ball_a, ball_b):
+    def ball_distance(ball_a : 'Ball', ball_b: 'Ball') -> float:
         """Distance between two balls
 
         Args:
@@ -71,7 +79,7 @@ class Ball:
         return math.sqrt((ball_a.x - ball_b.x) ** 2 + (ball_a.y - ball_b.y) ** 2) - ball_a.radius - ball_b.radius
 
     # duplicate of distance function for speed
-    def overlaps(self, ball):
+    def overlaps(self, ball : 'Ball') -> bool:
         """Class method for ball to check if another ball overlaps, i.e. collides
 
         Args:
@@ -83,7 +91,7 @@ class Ball:
         return (math.sqrt((ball.x - self.x) **2 + (ball.y - self.y) **2) - self.radius - ball.radius) <= 0
     
     # check if touches walls
-    def touches_wall(self):
+    def touches_wall(self) -> bool:
         """Checks if ball radius is over the frame, i.e. touches walls. Uses
         FRAME... constants for boundaries
 
@@ -96,7 +104,7 @@ class Ball:
         else:
             return False
 
-    def bounce_w_wall(self): # rudimentary non-physical wall collision
+    def bounce_w_wall(self) -> None: # rudimentary non-physical wall collision
         """Bounces ball with frame, i.e. reverses according speed.
         Rudimentary yet, nonphysical
 
@@ -116,7 +124,7 @@ class Ball:
         self.move() # experimental
         return None
 
-    def bounce_w_ball(self, ball2):
+    def bounce_w_ball(self, ball2 : 'Ball') -> None:
         """Bounces two balls.
         Simplistic physical, 1-dim collisions calculated
         separately for x and y
@@ -127,12 +135,6 @@ class Ball:
         Returns:
             None
         """        
-        # rudimentary version: reverse speeds
-        # self.x_vel = -1 * self.x_vel
-        # ball2.x_vel = -1 * ball2.x_vel
-        # self.y_vel = -1 * self.y_vel
-        # ball2.y_vel = -1 * ball2.y_vel
-        
         # Okay, this is still a simplistication. It is considered that
         # momentum is preserved in both x and y dimensions, so they are
         # calculated separately. Temporary variables needed, *_temp
@@ -155,7 +157,7 @@ class Ball_frame():
     """
     Class to hold the wanted dimensions of frame to hold the balls and physics
     """    
-    def __init__(self, min__x, min__y, max__x, max__y):
+    def __init__(self, min__x : int, min__y : int, max__x : int, max__y : int) -> None:
         """constructor for Ball_frame.
 
         Args:
@@ -236,7 +238,7 @@ class Ball_window(QGraphicsScene):
     A Window (QGraphicsscene) to show the balls within GUI. Ballframe sets the size
     """    
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(Ball_window, self).__init__()
         self.args = args
         self.kwargs = kwargs
@@ -282,17 +284,22 @@ class Ball_window(QGraphicsScene):
         self.show_balls()
         self.start_worker('ballmover', self.move_balls)
 
-    def update_ball_positions(self, positions):
+    def update_ball_positions(self, positions : list) -> None:
+        """used by the worker class by signal. Has to be in main thread
+
+        Args:
+            positions (list): The positions of the balls
+        """        
         for ball, pos in zip(self.ball_list, positions):
             ball.ball_ellipse.setPos(*pos)
 
-    def closeEvent(self,event):
+    def closeEvent(self, event) -> None:
         print('Close event')
         self.class_ctrl['break'] = True
 
     # start_worker written as to start multiple workers as needed. However, it is not clear if the implementation is correct for this purpose.
     # For example, it is not clear if a new threadpool should be instantiated here, or in the init block of class
-    def start_worker(self, name, fn):
+    def start_worker(self, name : str, fn) -> None:
         max_thread_count = QThreadPool.globalInstance().maxThreadCount() # Maximum number of possible threads
         current_thread_count = QThreadPool.globalInstance().activeThreadCount()
         if current_thread_count >= max_thread_count:
@@ -311,7 +318,7 @@ class Ball_window(QGraphicsScene):
         pool.start(worker)
         print(f'worker "{name}" started')
 
-    def create_ball(self, max_tries = 10):
+    def create_ball(self, max_tries : int = 10) -> None:
         """Tries to create ball within a free space in scene. 
         Has maximum tries, so that it doesn't try forever if scene is almost full
 
@@ -319,7 +326,7 @@ class Ball_window(QGraphicsScene):
             max_tries (int, optional): Maximum tries to make a new ball. Defaults to 10.
         """        
         for tries in range(0, max_tries):
-            creation = Ball(self.ballframe)
+            creation = Ball(MIN_RADIUS, MAX_RADIUS, self.ballframe)
             ball_free_of_walls = ~creation.touches_wall() #?
             ball_doesnt_touch_another_ball = True
             if ball_free_of_walls:
@@ -332,7 +339,7 @@ class Ball_window(QGraphicsScene):
                 return None # bugfix: has to return not to fill ball_list
         return None
 
-    def show_balls(self):
+    def show_balls(self) -> None:
         """Add all QEllipseitems(Ball Obj) to the scene in ballwindow. Goes through ball_list
 
         Returns:
@@ -342,7 +349,7 @@ class Ball_window(QGraphicsScene):
             self.scene.addItem(ball.ball_ellipse)
         return None
 
-    def set_ball_positions(self):
+    def set_ball_positions(self) -> None:
         """Set positions in QEllipseitems in Ball objects to match x and y within the Ball object instance
         that are derived from physics
 
@@ -353,7 +360,7 @@ class Ball_window(QGraphicsScene):
             ball.ball_ellipse.setPos(ball.x - ball.radius, ball.y - ball.radius)
         return None
 
-    def move_balls(self, class_ctrl, worker_ctrl, signals, *args, **kwargs):
+    def move_balls(self, class_ctrl, worker_ctrl, signals, *args, **kwargs) -> None:
         worker_ctrl['break'] = False
         while True:
             ball_positions = []
@@ -365,13 +372,15 @@ class Ball_window(QGraphicsScene):
                     if other_ball != ball and other_ball.overlaps(ball):
                         other_ball.bounce_w_ball(ball)
                 ball_positions.append((ball.x - ball.radius, ball.y - ball.radius))
-            signals.update_positions.emit(ball_positions)  # Emitting the signal with positions
+            # Emitting the signal with positions
+            signals.update_positions.emit(ball_positions)  
             if class_ctrl['break'] or worker_ctrl['break']:
                 return False
             time.sleep(0.01)
 
 class MainWindow(QMainWindow):
-
+    """The main window of the program
+    """
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.args = args 
@@ -384,7 +393,7 @@ class MainWindow(QMainWindow):
         # print('Forced starting of ball_window')
         # self.start_ball_window()
 
-    def start_ball_window(self):
+    def start_ball_window(self) -> None:
         if self.ball_window is None: # Check if window is already created not to create multiple child windows
             self.ball_window = Ball_window( max_balls=self.kwargs['max_balls'],
                                             frame_size = self.kwargs['frame_size'],
@@ -392,20 +401,17 @@ class MainWindow(QMainWindow):
         self.ball_window.view.show() # If window is created and then closed, it will reappear because of this
 
 def main():
-
-    max_balls_wanted = 100 # seems to work best
-    max_tries = 100
     frame_size = {
         'min_x': 1,
         'min_y': 1,
-        'max_x': 1080,
-        'max_y': 780,
+        'max_x': 1 + WIDTH,
+        'max_y': 1 + HEIGHT,
     }
     app = QApplication(sys.argv)
     main = MainWindow(
                       frame_size=frame_size,
-                      max_balls=max_balls_wanted,
-                      max_tries=max_tries
+                      max_balls=MAX_BALLS,
+                      max_tries=MAX_TRIES
                     )
     main.show()
     app.exec()
