@@ -42,8 +42,8 @@ class Ball:
         self.ball_ellipse = ball_render
         self.frame = frame
 
-    # simple dist between two coordinates
     def _dist(x1 : int, y1 : int, x2 : int, y2 : int) -> float:
+        # simple geometric distance between two coordinates
         return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     def __str__(self) -> str:
@@ -78,7 +78,6 @@ class Ball:
         """        
         return math.sqrt((ball_a.x - ball_b.x) ** 2 + (ball_a.y - ball_b.y) ** 2) - ball_a.radius - ball_b.radius
 
-    # duplicate of distance function for speed
     def overlaps(self, ball : 'Ball') -> bool:
         """Class method for ball to check if another ball overlaps, i.e. collides
 
@@ -90,7 +89,6 @@ class Ball:
         """        
         return (math.sqrt((ball.x - self.x) **2 + (ball.y - self.y) **2) - self.radius - ball.radius) <= 0
     
-    # check if touches walls
     def touches_wall(self) -> bool:
         """Checks if ball radius is over the frame, i.e. touches walls. Uses
         FRAME... constants for boundaries
@@ -104,7 +102,7 @@ class Ball:
         else:
             return False
 
-    def bounce_w_wall(self) -> None: # rudimentary non-physical wall collision
+    def bounce_w_wall(self) -> None: 
         """Bounces ball with frame, i.e. reverses according speed.
         Rudimentary yet, nonphysical
 
@@ -119,9 +117,8 @@ class Ball:
             self.x_vel = -1 * self.x_vel
         if self.y <= self.frame.min_y or self.y >= self.frame.max_y:
             self.y_vel = -1 * self.y_vel
-        # implement movement of ball away from wall
-        # here:
-        self.move() # experimental
+        # Move away
+        self.move()
         return None
 
     def bounce_w_ball(self, ball2 : 'Ball') -> None:
@@ -147,9 +144,8 @@ class Ball:
         ball2.x_vel = x_vel_ball2_temp
         ball2.y_vel = y_vel_ball2_temp
         
-        # implement movement of both balls from eachother
-        # here:
-        self.move() # experimental
+        # implement movement of both balls from eachother here:
+        self.move()
         ball2.move()
         return None
 
@@ -218,7 +214,7 @@ class Worker(QRunnable):
         Initialise the runner function with passed args, kwargs.
         '''
         # Retrieve args/kwargs here; and fire processing using them
-        result = None # Assign a default value to avoid UnbounlocalError
+        result = None # Assign a default value to avoid UnboundlocalError
         try:
             result = self.fn(self.class_ctrl, self.worker_ctrl, *self.args, **self.kwargs)
         except:
