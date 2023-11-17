@@ -1,0 +1,6 @@
+# Constants:
+
+MAX_BALLS = 100
+MAX_TRIES = 100
+MIN_RADIUS = 5
+MAX_RADIUS = 50
