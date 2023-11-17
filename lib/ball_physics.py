@@ -22,7 +22,7 @@ class Ball:
         self.x = random.randint(frame.min_x, frame.max_x)
         self.y = random.randint(frame.min_y, frame.max_y)
         self.radius = random.randint(min_radius, max_radius)
-        self.mass = int(self.radius*self.radius * 3.14)
+        self._mass = int(self.radius*self.radius * 3.14)
         self.x_vel = random.random() * MAX_SPEED * 2 - 0.5 * MAX_SPEED
         self.y_vel = random.random() * MAX_SPEED * 2- 0.5 * MAX_SPEED
         self.colour = QColor(random.randint(10, 255), random.randint(10, 255),
@@ -35,6 +35,10 @@ class Ball:
         ball_render.setBrush(brush)
         self.ball_ellipse = ball_render
         self.frame = frame
+        
+    @property
+    def mass(self):
+        return self._mass
 
     def _dist(x1 : int, y1 : int, x2 : int, y2 : int) -> float:
         # simple geometric distance between two coordinates
