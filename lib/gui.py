@@ -1,10 +1,10 @@
 '''gui for bouncing balls'''
 
-from PySide6.QtWidgets import QMainWindow, QPushButton, QApplication, QGraphicsScene, QGraphicsView, QGraphicsEllipseItem
-from PySide6.QtGui import QColor, QBrush, QGuiApplication
+from PySide6.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView
+from PySide6.QtGui import QColor
 from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
 
-import sys, time, traceback, math, random
+import sys, time, traceback
 
 from ball_physics import Ball, Ball_frame
 from constants import *

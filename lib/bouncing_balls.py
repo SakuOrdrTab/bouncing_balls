@@ -1,10 +1,8 @@
 # first stable version 1.0
 
-from PySide6.QtWidgets import QMainWindow, QPushButton, QApplication, QGraphicsScene, QGraphicsView, QGraphicsEllipseItem
-from PySide6.QtGui import QColor, QBrush, QGuiApplication
-from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
+from PySide6.QtWidgets import QApplication
 
-import sys, time, traceback, math, random
+import sys
 
 from gui import MainWindow
 from constants import *

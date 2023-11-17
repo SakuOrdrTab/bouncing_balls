@@ -1,10 +1,10 @@
 '''Ball class for physics etc'''
 
-from PySide6.QtWidgets import QMainWindow, QPushButton, QApplication, QGraphicsScene, QGraphicsView, QGraphicsEllipseItem
-from PySide6.QtGui import QColor, QBrush, QGuiApplication
-from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
+from PySide6.QtWidgets import QGraphicsEllipseItem
+from PySide6.QtGui import QColor, QBrush
+from PySide6.QtCore import QRunnable, Slot, Signal, QObject
 
-import sys, time, traceback, math, random
+import sys, traceback, math, random
 
 class Ball:
     """
