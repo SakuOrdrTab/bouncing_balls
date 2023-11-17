@@ -1,7 +1,7 @@
 # first stable version 1.0
 
 from PySide6.QtWidgets import QMainWindow, QPushButton, QApplication, QGraphicsScene, QGraphicsView, QGraphicsEllipseItem
-from PySide6.QtGui import QColor, QBrush
+from PySide6.QtGui import QColor, QBrush, QGuiApplication
 from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
 
 import sys, time, traceback, math, random
@@ -241,12 +241,7 @@ class Ball_window(QGraphicsScene):
         self.ball_list = []
         
         # create a ball_frame
-        self.ballframe = Ball_frame(
-            self.kwargs['frame_size']['min_x'],
-            self.kwargs['frame_size']['min_y'],
-            self.kwargs['frame_size']['max_x'],
-            self.kwargs['frame_size']['max_y'],
-            )
+        self.ballframe = kwargs['frame_size']
         
          # Initialize WorkerSignals instance
         self.worker_signals = WorkerSignals()
@@ -265,10 +260,10 @@ class Ball_window(QGraphicsScene):
         
         # create scene
         self.scene = QGraphicsScene(
-            self.kwargs['frame_size']['min_x'],
-            self.kwargs['frame_size']['min_y'],
-            self.kwargs['frame_size']['max_x'],
-            self.kwargs['frame_size']['max_y'],
+            self.ballframe.min_x,
+            self.ballframe.min_y,
+            self.ballframe.max_x,
+            self.ballframe.max_y,
             )        
         self.view = QGraphicsView(self.scene)
         self.view.closeEvent = self.closeEvent # Add close event of the window to stop worker threads
@@ -381,35 +376,43 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.args = args 
         self.kwargs = kwargs
-        self.button = QPushButton("Start balls")
-        self.button.clicked.connect(self.start_ball_window)
-        self.setCentralWidget(self.button)
-        self.show()
-        self.ball_window = None
-        # print('Forced starting of ball_window')
-        # self.start_ball_window()
+        
+        # Create the Ball_frame and Ball_window
+        self.ball_frame = Ball_frame(1, 1, kwargs['frame_size'].width(), kwargs['frame_size'].height())
+        self.ball_window = Ball_window(max_balls=self.kwargs['max_balls'],
+                                       frame_size=self.ball_frame,
+                                       max_tries=self.kwargs['max_tries'])
+        
+        # Set the QGraphicsView of ball_window as the central widget
+        self.setCentralWidget(self.ball_window.view)
 
-    def start_ball_window(self) -> None:
-        if self.ball_window is None: # Check if window is already created not to create multiple child windows
-            self.ball_window = Ball_window( max_balls=self.kwargs['max_balls'],
-                                            frame_size = self.kwargs['frame_size'],
-                                            max_tries=self.kwargs['max_tries'])
-        self.ball_window.view.show() # If window is created and then closed, it will reappear because of this
+        # Resize the MainWindow
+        self.resize(kwargs['frame_size'])
+
+        # Show the MainWindow
+        self.show()
+        
+
+    # def start_ball_window(self) -> None:
+    #     if self.ball_window is None: # Check if window is already created not to create multiple child windows
+    #         self.ball_window = Ball_window( max_balls=self.kwargs['max_balls'],
+    #                                         frame_size = self.ball_frame,
+    #                                         max_tries=self.kwargs['max_tries'])
+    #     self.ball_window.view.show() # If window is created and then closed, it will reappear because of this
 
 def main():
-    frame_size = {
-        'min_x': 1,
-        'min_y': 1,
-        'max_x': 1 + WIDTH,
-        'max_y': 1 + HEIGHT,
-    }
     app = QApplication(sys.argv)
-    main = MainWindow(
-                      frame_size=frame_size,
+    
+    # Get native screen size and set to full screen
+    size = app.screens()[0].size()   
+    
+    main_window = MainWindow(
+                      frame_size=size,
                       max_balls=MAX_BALLS,
                       max_tries=MAX_TRIES
                     )
-    main.show()
+    
+    main_window.show()
     app.exec()
 
 if __name__ == "__main__":
