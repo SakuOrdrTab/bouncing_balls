@@ -6,6 +6,8 @@ from PySide6.QtCore import QRunnable, Slot, Signal, QObject
 
 import sys, traceback, math, random
 
+from constants import *
+
 class Ball:
     """
     class of Ball, location of the ball, velocities, mass, radius, holds also QEllipseItem to draw the ball
@@ -21,8 +23,8 @@ class Ball:
         self.y = random.randint(frame.min_y, frame.max_y)
         self.radius = random.randint(min_radius, max_radius)
         self.mass = int(self.radius*self.radius * 3.14)
-        self.x_vel = random.random() * 3 - 0.5
-        self.y_vel = random.random() * 3 - 0.5
+        self.x_vel = random.random() * MAX_SPEED * 2 - 0.5 * MAX_SPEED
+        self.y_vel = random.random() * MAX_SPEED * 2- 0.5 * MAX_SPEED
         self.colour = QColor(random.randint(10, 255), random.randint(10, 255),
                              random.randint(10, 255), 255) # totally black not allowed
 

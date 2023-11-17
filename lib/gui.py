@@ -221,7 +221,7 @@ class Ball_window(QGraphicsScene):
                 return False
             else:
                 signals.update_positions.emit(ball_positions)
-            time.sleep(0.01)
+            time.sleep(0.002)
 
 class MainWindow(QMainWindow):
     """The main window of the program
