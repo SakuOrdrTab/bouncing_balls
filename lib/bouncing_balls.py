@@ -7,8 +7,7 @@ from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
 import sys, time, traceback, math, random
 
 # Constants:
-WIDTH = 1080
-HEIGHT = 780
+
 MAX_BALLS = 10
 MAX_TRIES = 100
 MIN_RADIUS = 5
