@@ -220,4 +220,5 @@ class Worker(QRunnable):
                 return
             else:
                 self.signals.finished.emit()  # Done
+            
 

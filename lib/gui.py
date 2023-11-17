@@ -60,12 +60,20 @@ class Worker(QRunnable):
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         else:
-            self.signals.result.emit(result)  # Return the result of the processing
+            # Check if the worker is supposed to stop before emitting result
+            if not self.worker_ctrl.get('break', False):
+                self.signals.result.emit(result)
         finally:
-            if result == False: # Had to hack False as return if the worker is killed by Ball_window. Otherwise self.signals is deleted and emit() results in error
-                return
-            else:
-                self.signals.finished.emit()  # Done
+            # Check if the worker is supposed to stop before emitting finished
+            if not self.worker_ctrl.get('break', False):
+                self.signals.finished.emit()
+                
+    def disconnect_signals(self):
+    # disconnect signals on exit
+        self.signals.finished.disconnect()
+        self.signals.error.disconnect()
+        self.signals.result.disconnect()
+        self.signals.update_positions.disconnect()
 
 class Ball_window(QGraphicsScene):
     """
@@ -123,8 +131,14 @@ class Ball_window(QGraphicsScene):
             ball.ball_ellipse.setPos(*pos)
 
     def closeEvent(self, event) -> None:
-        print('Close event')
+        # Signal all workers to stop
         self.class_ctrl['break'] = True
+        for worker_dict in self.worker_list:
+            worker_dict['worker_ctrl']['break'] = True
+
+        # Wait for all threads to finish
+        QThreadPool.globalInstance().waitForDone()
+        
 
     # start_worker written as to start multiple workers as needed. However, it is not clear if the implementation is correct for this purpose.
     # For example, it is not clear if a new threadpool should be instantiated here, or in the init block of class
@@ -201,10 +215,12 @@ class Ball_window(QGraphicsScene):
                     if other_ball != ball and other_ball.overlaps(ball):
                         other_ball.bounce_w_ball(ball)
                 ball_positions.append((ball.x - ball.radius, ball.y - ball.radius))
-            # Emitting the signal with positions
-            signals.update_positions.emit(ball_positions)  
+            
+            # Check if the worker is supposed to stop before emitting update_positions
             if class_ctrl['break'] or worker_ctrl['break']:
                 return False
+            else:
+                signals.update_positions.emit(ball_positions)
             time.sleep(0.01)
 
 class MainWindow(QMainWindow):
@@ -230,10 +246,3 @@ class MainWindow(QMainWindow):
         # Show the MainWindow
         self.show()
         
-
-    # def start_ball_window(self) -> None:
-    #     if self.ball_window is None: # Check if window is already created not to create multiple child windows
-    #         self.ball_window = Ball_window( max_balls=self.kwargs['max_balls'],
-    #                                         frame_size = self.ball_frame,
-    #                                         max_tries=self.kwargs['max_tries'])
-    #     self.ball_window.view.show() # If window is created and then closed, it will reappear because of this
