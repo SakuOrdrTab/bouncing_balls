@@ -12,18 +12,15 @@ from src.constants import MAX_BALLS, MAX_TRIES
 
 def main():
     app = QApplication(sys.argv)
-    
+
     # Get native screen size and set to full screen
-    size = app.screens()[0].size()   
-    
-    main_window = MainWindow(
-                      frame_size=size,
-                      max_balls=MAX_BALLS,
-                      max_tries=MAX_TRIES
-                    )
-    
+    size = app.screens()[0].size()
+
+    main_window = MainWindow(frame_size=size, max_balls=MAX_BALLS, max_tries=MAX_TRIES)
+
     main_window.show()
     app.exec()
+
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,4 @@
-'''Simple entry point'''
+"""Simple entry point"""
 
 from src.bouncing_balls import main
 
