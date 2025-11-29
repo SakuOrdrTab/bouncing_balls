@@ -4,9 +4,12 @@ from PySide6.QtWidgets import QGraphicsEllipseItem
 from PySide6.QtGui import QColor, QBrush
 from PySide6.QtCore import QRunnable, Slot, Signal, QObject
 
-import sys, traceback, math, random
+import sys
+import traceback
+import math
+import random
 
-from constants import *
+from src.constants import MAX_SPEED
 
 class Ball:
     """
@@ -40,7 +43,7 @@ class Ball:
     def mass(self):
         return self._mass
 
-    def _dist(x1 : int, y1 : int, x2 : int, y2 : int) -> float:
+    def _dist(self, x1 : int, y1 : int, x2 : int, y2 : int) -> float:
         # simple geometric distance between two coordinates
         return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
@@ -215,14 +218,15 @@ class Worker(QRunnable):
         result = None # Assign a default value to avoid UnboundlocalError
         try:
             result = self.fn(self.class_ctrl, self.worker_ctrl, *self.args, **self.kwargs)
-        except:
+        except Exception as e:
+            print("Exception in ball_physics.run: ", e)
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
         else:
             self.signals.result.emit(result)  # Return the result of the processing
         finally:
-            if result == False: # Had to hack False as return if the worker is killed by Ball_window. Otherwise self.signals is deleted and emit() results in error
+            if not result: # Had to hack False as return if the worker is killed by Ball_window. Otherwise self.signals is deleted and emit() results in error
                 return
             else:
                 self.signals.finished.emit()  # Done

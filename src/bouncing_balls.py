@@ -4,8 +4,8 @@ from PySide6.QtWidgets import QApplication
 
 import sys
 
-from gui import MainWindow
-from constants import *
+from src.gui import MainWindow
+from src.constants import MAX_BALLS, MAX_TRIES
 
 # Constants are in constants.py
 

@@ -4,10 +4,12 @@ from PySide6.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView
 from PySide6.QtGui import QColor
 from PySide6.QtCore import QRunnable, Slot, QThreadPool, Signal, QObject
 
-import sys, time, traceback
+import sys
+import time
+import traceback
 
-from ball_physics import Ball, Ball_frame
-from constants import *
+from src.ball_physics import Ball, Ball_frame
+from src.constants import MIN_RADIUS, MAX_RADIUS
 
 class WorkerSignals(QObject): 
     '''
@@ -55,7 +57,8 @@ class Worker(QRunnable):
         result = None # Assign a default value to avoid UnboundlocalError
         try:
             result = self.fn(self.class_ctrl, self.worker_ctrl, *self.args, **self.kwargs)
-        except:
+        except Exception as e:
+            print("Exception in gui.run: ", e)
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.signals.error.emit((exctype, value, traceback.format_exc()))
@@ -146,7 +149,7 @@ class Ball_window(QGraphicsScene):
         max_thread_count = QThreadPool.globalInstance().maxThreadCount() # Maximum number of possible threads
         current_thread_count = QThreadPool.globalInstance().activeThreadCount()
         if current_thread_count >= max_thread_count:
-            print(f'Max thread count reached, cannot start worker') 
+            print(f'Max thread count reached, cannot start worker, current count {current_thread_count}') 
             return
         # self.label.setText(f"Running {threadCount} Threads")
         pool = QThreadPool.globalInstance()
@@ -218,7 +221,7 @@ class Ball_window(QGraphicsScene):
             
             # Check if the worker is supposed to stop before emitting update_positions
             if class_ctrl['break'] or worker_ctrl['break']:
-                return False
+                return None
             else:
                 signals.update_positions.emit(ball_positions)
             time.sleep(0.002)
